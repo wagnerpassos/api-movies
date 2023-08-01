@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    avatar VARCHAR(50),
+    created_at DATETIME DEFAULT NOW(),
+    updated_at DATETIME DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS movie_notes (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    rating INTEGER,
+    user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT NOW(),
+    updated_at DATETIME DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    INDEX (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS movie_tags (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    user_id INTEGER NOT NULL,
+    note_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (note_id) REFERENCES movie_notes(id) ON DELETE CASCADE,
+    INDEX (user_id)
+);
