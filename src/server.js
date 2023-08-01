@@ -1,5 +1,6 @@
 import express from "express";
 import userRouter from "./router/userRouter.js";
+import AppError from "./util/AppError.js";
 
 const app = express();
 
