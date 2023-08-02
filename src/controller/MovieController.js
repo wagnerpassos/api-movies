@@ -74,7 +74,7 @@ class MovieController {
     validatorUserId(id) {
         if (!NaN && Number.isInteger(id))
             return { statusError: false, message: `Id de usuário correto` };
-        return { statusError: true, message: `O id de usuário apresneta problemas` };
+        return { statusError: true, message: `O id de usuário apresenta problemas` };
     }
 
     async create(req, res) {
@@ -207,7 +207,7 @@ class MovieController {
                 throw new Error(`A nota do filme não foi encontrada`);
 
             const values = [id];
-            const data = await new Promise((resolve, reject) => {
+            const movie = await new Promise((resolve, reject) => {
                 db.query(queryDelete, values, (error, data) => {
                     if (error)
                         reject(error);
@@ -215,7 +215,7 @@ class MovieController {
                 });
             });
 
-            res.json(data);
+            res.json(movie);
         } catch (error) {
             appErrorInstance.throwError(res, error.message);
         }

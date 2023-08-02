@@ -184,7 +184,7 @@ class UserController {
             if (!(await this.getUserById(id)))
                 throw new Error(`O usuário não foi encontrado`);
             const values = [id];
-            const data = await new Promise((resolve, reject) => {
+            const user = await new Promise((resolve, reject) => {
                 db.query(queryDelete, values, (error, data) => {
                     if (error)
                         reject(error);
@@ -192,7 +192,7 @@ class UserController {
                 });
             });
 
-            res.json(data);
+            res.json(user);
         } catch (error) {
             appErrorInstance.throwError(res, error.message);
         }
