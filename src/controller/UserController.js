@@ -2,7 +2,6 @@ import db from "../database/db.js";
 import appErrorInstance from "../util/AppError.js";
 import bcryptjs from 'bcryptjs';
 
-
 class UserController {
     constructor() {
         this.create = this.create.bind(this);
@@ -97,7 +96,7 @@ class UserController {
         const querySelect = `SELECT * FROM users`;
 
         try {
-            const user = await new Promise((resolve, reject) => {
+            const users = await new Promise((resolve, reject) => {
                 db.query(querySelect, (error, data) => {
                     if (error)
                         reject(error);
@@ -105,7 +104,7 @@ class UserController {
                 });
             });
 
-            res.json(user[0]);
+            res.json(users);
         } catch (error) {
             appErrorInstance.throwError(res, error.message);
         }

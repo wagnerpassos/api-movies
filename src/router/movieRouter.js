@@ -1,12 +1,12 @@
 import { Router } from "express";
-import MovieRouter from "../controller/MovieRouter.js";
+import MovieController from "../controller/MovieController.js";
 
 const movieRouter = Router();
+const movieController = new MovieController();
 
-movieRouter.get('/', MovieRouter);
-movieRouter.get('/', MovieRouter);
-movieRouter.post('/', MovieRouter);
-movieRouter.patch('/', MovieRouter);
-movieRouter.delete('/', MovieRouter);
+movieRouter.get('/', movieController.read);
+movieRouter.post('/', movieController.create);
+movieRouter.patch('/', movieController.update);
+movieRouter.delete('/', movieController.delete);
 
 export default movieRouter;
