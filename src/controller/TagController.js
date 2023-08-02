@@ -15,7 +15,21 @@ class TagController {
     }
 
     async read(req, res) {
-        res.send("READ OK");
+        const querySelect = `SELECT * FROM movie_tags`;
+
+        try {
+            const movieTags = await new Promise((resolve, reject) => {
+                db.query(querySelect, (error, data) => {
+                    if (error)
+                        reject(error);
+                    resolve(data);
+                });
+            });
+
+            res.json(movieTags);
+        } catch (error) {
+            appErrorInstance.throwError(res, error.message);
+        }
     }
 
     async update(req, res) {

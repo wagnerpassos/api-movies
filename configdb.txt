@@ -23,9 +23,7 @@ CREATE TABLE IF NOT EXISTS movie_notes (
 CREATE TABLE IF NOT EXISTS movie_tags (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    user_id INTEGER NOT NULL,
     note_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (note_id) REFERENCES movie_notes(id),
     INDEX (user_id)
 );
