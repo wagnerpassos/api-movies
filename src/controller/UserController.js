@@ -43,7 +43,7 @@ class UserController {
         if (name) {
             if (name.length >= minCharacters && name.length <= maxCharacters)
                 return { statusError: false, message: `Nome correto` };
-            return { statusError: true, message: `O nome deve ter de ${minCharacters} até ${maxCharacters} caracteres` };
+            return { statusError: true, message: `O nome deve conter de ${minCharacters} até ${maxCharacters} caracteres` };
         }
         return { statusError: true, message: `Não foi informado um nome` };
     }
@@ -120,7 +120,7 @@ class UserController {
 
         try {
             if (!id)
-                throw new Error(`O id: ${id} não existe`);
+            throw new Error(`O valor ${id} não é valido para ID`);
 
             const user = await this.getUserById(id);
 
@@ -180,7 +180,7 @@ class UserController {
 
         try {
             if (!id)
-                throw new Error(`O id: ${id} não existe`);
+                throw new Error(`O valor ${id} não é valido para ID`);
             if (!(await this.getUserById(id)))
                 throw new Error(`O usuário não foi encontrado`);
             const values = [id];

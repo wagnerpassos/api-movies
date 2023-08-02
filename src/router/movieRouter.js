@@ -6,7 +6,7 @@ const movieController = new MovieController();
 
 movieRouter.get('/', movieController.read);
 movieRouter.post('/', movieController.create);
-movieRouter.patch('/', movieController.update);
+movieRouter.put('/:id', movieController.update);
 movieRouter.delete('/', movieController.delete);
 
 export default movieRouter;
