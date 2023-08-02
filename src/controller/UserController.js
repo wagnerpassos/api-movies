@@ -59,7 +59,6 @@ class UserController {
         return { statusError: true, message: `O email informado não está em um padrão válido` };
     }
 
-
     async create(req, res) {
         const { name, email, password } = req.body;
         const queryInsert = `INSERT INTO users (name, email, password)
@@ -77,9 +76,10 @@ class UserController {
             if (validPassword.statusError)
                 throw new Error(validPassword.message);
 
-            const values = [name, email, password];
+            const hashedPassword = bcryptjs.hashSync(password, 8);
+            const values = [name, email, hashedPassword];
 
-            const user = await new Promise((resolve, reject) => {
+            const data = await new Promise((resolve, reject) => {
                 db.query(queryInsert, values, (error, data) => {
                     if (error)
                         reject(error);
@@ -87,16 +87,11 @@ class UserController {
                 });
             });
 
-            res.json({ user });
+            res.json(data);
         } catch (error) {
             appErrorInstance.throwError(res, error.message);
         }
-
-
-
     }
-
-
 
     async read(req, res) {
         const querySelect = `SELECT * FROM users`;
@@ -117,11 +112,91 @@ class UserController {
     }
 
     async update(req, res) {
-        res.json({ "message": "UPDATE" });
+        const { id } = req.params;
+        const { name, email, password, old_password } = req.body;
+
+        const queryUpdate = `UPDATE users 
+                    SET name = ?, email = ?, password = ?, updated_at = ?
+                    WHERE id = ?`;
+
+        try {
+            if (!id)
+                throw new Error(`O id: ${id} não existe`);
+
+            const user = await this.getUserById(id);
+
+            if (!user)
+                throw new Error(`O usuário não foi encontrado`);
+
+            if (name) {
+                const validName = this.validatorName(name);
+
+                if (validName.statusError)
+                    throw new Error(validName.message);
+                user.name = name;
+            }
+
+            if (email) {
+                const validEmail = this.validatorEmail(email);
+
+                if (validEmail.statusError)
+                    throw new Error(validEmail.message);
+                user.email = email;
+            }
+
+            if (password && old_password) {
+                const validPassword = this.validatorPassword(password);
+                const validOldPassword = this.validatorPassword(old_password);
+
+                if (validPassword.statusError)
+                    throw new Error(validPassword.message);
+                if (validOldPassword.statusError)
+                    throw new Error(validOldPassword.message);
+                if (!(await bcryptjs.compare(old_password, user.password)))
+                    throw new Error(`A senha anterior não confere com a informada`);
+
+                user.password = bcryptjs.hashSync(password, 8);
+            }
+
+            const formattedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            const values = [user.name, user.email, user.password, formattedDate, id];
+            const data = await new Promise((resolve, reject) => {
+                db.query(queryUpdate, values, (error, data) => {
+                    if (error)
+                        reject(error);
+                    resolve(data);
+                });
+            });
+
+            res.json(user);
+        } catch (error) {
+            appErrorInstance.throwError(res, error.message);
+        }
     }
 
     async delete(req, res) {
-        res.json({ "message": "DELETE" });
+        const { id } = req.body;
+        const queryDelete = `DELETE FROM users 
+                     WHERE id = ?`;
+
+        try {
+            if (!id)
+                throw new Error(`O id: ${id} não existe`);
+            if (!(await this.getUserById(id)))
+                throw new Error(`O usuário não foi encontrado`);
+            const values = [id];
+            const data = await new Promise((resolve, reject) => {
+                db.query(queryDelete, values, (error, data) => {
+                    if (error)
+                        reject(error);
+                    resolve(data);
+                });
+            });
+
+            res.json(data);
+        } catch (error) {
+            appErrorInstance.throwError(res, error.message);
+        }
     }
 }
 
