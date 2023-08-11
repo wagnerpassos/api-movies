@@ -1,7 +1,6 @@
 import db from "../database/db.js";
 import appErrorInstance from "../util/AppError.js";
 
-
 class TagController {
     constructor() {
         this.create = this.create.bind(this);
