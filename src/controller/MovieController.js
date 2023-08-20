@@ -5,6 +5,7 @@ class MovieController {
     constructor() {
         this.create = this.create.bind(this);
         this.read = this.read.bind(this);
+        this.readById = this.readById.bind(this);
         this.delete = this.delete.bind(this);
         this.update = this.update.bind(this);
     }
@@ -90,18 +91,18 @@ class MovieController {
                 throw new Error(validTitle.message);
             if (validDescription.statusError)
                 throw new Error(validDescription.message);
-            if(rating){
+            if (rating) {
                 const validRating = this.validatorRating(rating);
 
-                if(validRating.statusError)
+                if (validRating.statusError)
                     throw new Error(validRating.message);
             }
-            if(validUserId.statusError)
+            if (validUserId.statusError)
                 throw new Error(validUserId.message);
 
             const existingUser = await this.getUserById(user_id);
 
-            if(!existingUser)
+            if (!existingUser)
                 throw new Error("O usuário informado não existe na base de dados");
 
             const values = [title, description, rating, user_id];
@@ -132,6 +133,24 @@ class MovieController {
             });
 
             res.json(movieNotes);
+        } catch (error) {
+            appErrorInstance.throwError(res, error.message);
+        }
+    }
+
+    async readById(req, res) {
+        const { id } = req.params;
+
+        try {
+            if (!id)
+                throw new Error(`O valor ${id} não é valido para ID`);
+
+            const movie = await this.getMovieById(id);
+
+            if (!movie)
+                throw new Error(`A nota do filme não foi encontrada`);
+
+            res.json(movie);
         } catch (error) {
             appErrorInstance.throwError(res, error.message);
         }
@@ -170,10 +189,10 @@ class MovieController {
                 movie.description = description;
             }
 
-            if(rating){
+            if (rating) {
                 const validRating = this.validatorRating(rating);
 
-                if(validRating.statusError)
+                if (validRating.statusError)
                     throw new Error(validRating.message);
                 movie.rating = rating;
             }
