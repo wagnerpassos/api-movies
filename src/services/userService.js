@@ -56,9 +56,11 @@ async function getAllUsers() {
 }
 
 async function getUserById(id = 0) {
-    const query = "SELECT * FROM users WHERE id = ?";
+    const query = ` SELECT * 
+                    FROM users 
+                    WHERE id = ?`;
 
-    const user = await new Promise((resolve, reject) => {
+    const data = await new Promise((resolve, reject) => {
         db.query(query, [id], (error, data) => {
             if (error)
                 reject(error);
@@ -66,14 +68,13 @@ async function getUserById(id = 0) {
         });
     });
 
-    return user[0];
+    return data[0];
 }
 
 async function createUser({ user }) {
-    const queryInsert = `INSERT INTO users 
+    const queryInsert = `   INSERT INTO users 
                             (name, email, password)
-                            values(?, ?, ?)
-                        `;
+                            values(?, ?, ?)`;
     const validName = validatorName(user.name);
     const validEmail = validatorEmail(user.email);
     const validPassword = validatorPassword(user.password);
@@ -105,7 +106,10 @@ async function createUser({ user }) {
 
 async function updateUser({ user }) {
     const queryUpdate = `   UPDATE users 
-                            SET name = ?, email = ?, password = ?, updated_at = ?
+                            SET name = ?, 
+                            email = ?, 
+                            password = ?, 
+                            updated_at = ?
                             WHERE id = ?`;
     const { id, name, email, password, old_password } = user;
 
@@ -149,7 +153,7 @@ async function updateUser({ user }) {
 
         const formattedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const values = [userTmp.name, userTmp.email, userTmp.password, formattedDate, id];
-        const response = await new Promise((resolve, reject) => {
+        const data = await new Promise((resolve, reject) => {
             db.query(queryUpdate, values, (error, data) => {
                 if (error)
                     reject(error);
@@ -157,15 +161,15 @@ async function updateUser({ user }) {
             });
         });
 
-        return response;
+        return data;
     } catch (error) {
         throw new Error(error.message);
     }
 }
 
 async function deleteUser(id = 0) {
-    const queryDelete = `DELETE FROM users 
-                         WHERE id = ?`;
+    const queryDelete = `   DELETE FROM users 
+                            WHERE id = ?`;
 
     try {
         if (!id)

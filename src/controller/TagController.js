@@ -2,59 +2,6 @@ import db from "../database/db.js";
 import appErrorInstance from "../util/AppError.js";
 
 class TagController {
-    constructor() {
-        this.create = this.create.bind(this);
-        this.read = this.read.bind(this);
-        this.delete = this.delete.bind(this);
-        this.update = this.update.bind(this);
-    }
-
-    async getMovieById(id = 0) {
-        const query = `SELECT * FROM movie_notes WHERE id = ${id}`;
-
-        const movie = await new Promise((resolve, reject) => {
-            db.query(query, (error, data) => {
-                if (error)
-                    reject(error);
-                resolve(data);
-            });
-        });
-
-        return movie[0];
-    }
-
-    async getTagById(id = 0) {
-        const query = `SELECT * FROM movie_tags WHERE id = ${id}`;
-
-        const tag = await new Promise((resolve, reject) => {
-            db.query(query, (error, data) => {
-                if (error)
-                    reject(error);
-                resolve(data);
-            });
-        });
-
-        return tag[0];
-    }
-
-    validatorName(name) {
-        const minCharacters = 2;
-        const maxCharacters = 40;
-
-        if (name) {
-            if (name.length >= minCharacters && name.length <= maxCharacters)
-                return { statusError: false, message: `TAG correto` };
-            return { statusError: true, message: `A TAG do filme deve conter de ${minCharacters} até ${maxCharacters} caracteres` };
-        }
-        return { statusError: true, message: `Não foi informado um nome de TAG` };
-    }
-
-    validatorMovieId(id) {
-        if (!NaN && Number.isInteger(id))
-            return { statusError: false, message: `Id do filme correto` };
-        return { statusError: true, message: `O id do filme apresenta problemas` };
-    }
-
     async create(req, res) {
         const { name, note_id } = req.body;
         const queryInsert = `INSERT INTO movie_tags (name, note_id)

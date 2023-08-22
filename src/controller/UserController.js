@@ -16,8 +16,6 @@ class UserController {
     }
 
     async read(req, res) {
-        const querySelect = `SELECT * FROM users`;
-
         try {
             const response = await getAllUsers();
 
