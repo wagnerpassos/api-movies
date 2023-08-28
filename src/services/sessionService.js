@@ -5,7 +5,7 @@ async function getUserByEmail(email) {
                     FROM users 
                     WHERE email = ?`;
 
-    const user = await new Promise((resolve, reject) => {
+    const data = await new Promise((resolve, reject) => {
         db.query(query, [email], (error, data) => {
             if (error)
                 reject(error);
@@ -13,7 +13,7 @@ async function getUserByEmail(email) {
         });
     });
 
-    return user[0];
+    return data[0];
 }
 
 export { getUserByEmail };

@@ -9,6 +9,6 @@ tagRouter.use(ensureAuth);
 tagRouter.get('/', tagController.read);
 tagRouter.post('/', tagController.create);
 tagRouter.put('/:id', tagController.update);
-tagRouter.delete('/', tagController.delete);
+tagRouter.delete('/:id', tagController.delete);
 
 export default tagRouter;
