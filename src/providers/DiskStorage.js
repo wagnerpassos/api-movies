@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { UPLOAD_FOLDER, TMP_FOLDER, MULTER } from "../configs/upload";
+import { UPLOAD_FOLDER, TMP_FOLDER } from "../configs/upload";
 
 class DiskStorage {
     async saveFile(file){
@@ -25,4 +25,4 @@ class DiskStorage {
     }
 }
 
-export { DiskStorage };
+export default DiskStorage;

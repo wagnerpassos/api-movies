@@ -1,4 +1,3 @@
-import db from "../database/db.js";
 import appErrorInstance from "../util/AppError.js";
 import { getUserById, createUser, getAllUsers, deleteUser, updateUser } from "../services/userservice.js";
 

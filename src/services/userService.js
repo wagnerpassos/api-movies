@@ -1,6 +1,7 @@
 import db from "../database/db.js";
 import bcryptjs from 'bcryptjs';
 import appErrorInstance from "../util/AppError.js";
+import DiskStorage from "../providers/DiskStorage.js";
 
 function validatorPassword(password) {
     const minCharacters = 3;
@@ -104,6 +105,40 @@ async function createUser({ user }) {
     }
 }
 
+async function updateUserAvatar({ user }) {
+    const queryUpdate = `   UPDATE users 
+                            SET avatar = ?, 
+                            updated_at = ?
+                            WHERE id = ?`;
+    const { id, avatar } = user;
+
+    try {
+        const userTmp = await getUserById(id);
+
+        if (!userTmp)
+                throw new Error(`O usuário não foi encontrado`);
+        
+        const formattedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const values = [avatar, formattedDate, id];
+        const storage = new DiskStorage();
+
+        storage.saveFile(avatar);
+
+        const data = await new Promise((resolve, reject) => {
+            db.query(queryUpdate, values, (error, data) => {
+                if (error)
+                    reject(error);
+                resolve(data);
+            });
+        });
+
+        return data;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+    
+}
+
 async function updateUser({ user }) {
     const queryUpdate = `   UPDATE users 
                             SET name = ?, 
@@ -195,6 +230,7 @@ export {
     getAllUsers,
     getUserById,
     createUser,
+    updateUserAvatar,
     updateUser,
     deleteUser
 };
