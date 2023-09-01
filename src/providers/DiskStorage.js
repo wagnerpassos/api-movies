@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { UPLOAD_FOLDER, TMP_FOLDER } from "../configs/upload";
+import { UPLOAD_FOLDER, TMP_FOLDER } from "../configs/upload.js";
 
 class DiskStorage {
     async saveFile(file){
